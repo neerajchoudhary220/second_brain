@@ -1,0 +1,69 @@
+<aside class="sidebar">
+  <div class="sidebar-header">
+    <span class="brain-logo">🧠</span>
+    <span>Second Brain</span>
+  </div>
+
+  <div class="nav-section">
+    <div class="nav-section-title">Main</div>
+    <ul class="nav-menu">
+      <li class="nav-item <%= activeTab === 'dashboard' ? 'active' : '' %>">
+        <a href="/">
+          <span class="nav-left">📊 Dashboard</span>
+        </a>
+      </li>
+      <li class="nav-item <%= activeTab === 'all' ? 'active' : '' %>">
+        <a href="/memories">
+          <span class="nav-left">🗂️ All Memories</span>
+        </a>
+      </li>
+    </ul>
+  </div>
+
+  <div class="nav-section">
+    <div class="nav-section-title">Types</div>
+    <ul class="nav-menu">
+      <li class="nav-item <%= activeTab === 'note' ? 'active' : '' %>">
+        <a href="/memories?type=Note">
+          <span class="nav-left">📝 Notes</span>
+        </a>
+      </li>
+      <li class="nav-item <%= activeTab === 'code' ? 'active' : '' %>">
+        <a href="/memories?type=Code">
+          <span class="nav-left">💻 Code</span>
+        </a>
+      </li>
+      <li class="nav-item <%= activeTab === 'idea' ? 'active' : '' %>">
+        <a href="/memories?type=Idea">
+          <span class="nav-left">💡 Ideas</span>
+        </a>
+      </li>
+      <li class="nav-item <%= activeTab === 'task' ? 'active' : '' %>">
+        <a href="/memories?type=Task">
+          <span class="nav-left">✅ Tasks</span>
+        </a>
+      </li>
+      <li class="nav-item <%= activeTab === 'bookmark' ? 'active' : '' %>">
+        <a href="/memories?type=Bookmark">
+          <span class="nav-left">🔖 Bookmarks</span>
+        </a>
+      </li>
+    </ul>
+  </div>
+
+  <% if (typeof categories !== 'undefined' && categories && categories.length > 0) { %>
+  <div class="nav-section">
+    <div class="nav-section-title">Categories</div>
+    <ul class="nav-menu">
+      <% categories.slice(0, 5).forEach(cat => { %>
+        <li class="nav-item">
+          <a href="/memories?category=<%= encodeURIComponent(cat.category) %>">
+            <span class="nav-left">📁 <%= cat.category %></span>
+            <span class="nav-badge"><%= cat.count %></span>
+          </a>
+        </li>
+      <% }); %>
+    </ul>
+  </div>
+  <% } %>
+</aside>

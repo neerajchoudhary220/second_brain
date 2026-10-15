@@ -1,0 +1,127 @@
+<%- include('partials/header') %>
+<%- include('partials/sidebar') %>
+
+<div class="main-wrapper">
+  <%- include('partials/topbar') %>
+
+  <main class="content-body">
+    <div class="page-header">
+      <div>
+        <h1 class="page-title">🧠 Dashboard</h1>
+        <p class="page-subtitle">“If I don't want to forget it, I save it in my Second Brain.”</p>
+      </div>
+      <a href="/memories/create" class="btn btn-primary">+ Add Memory</a>
+    </div>
+
+    <!-- Stats Grid -->
+    <div class="stats-grid">
+      <div class="stat-card">
+        <div class="stat-icon total">🗂️</div>
+        <div class="stat-info">
+          <div class="stat-value"><%= stats.total %></div>
+          <div class="stat-label">Total Memories</div>
+        </div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon note">📝</div>
+        <div class="stat-info">
+          <div class="stat-value"><%= stats.typeCounts['Note'] || 0 %></div>
+          <div class="stat-label">Notes</div>
+        </div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon code">💻</div>
+        <div class="stat-info">
+          <div class="stat-value"><%= stats.typeCounts['Code'] || 0 %></div>
+          <div class="stat-label">Code Snippets</div>
+        </div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon idea">💡</div>
+        <div class="stat-info">
+          <div class="stat-value"><%= stats.typeCounts['Idea'] || 0 %></div>
+          <div class="stat-label">Ideas</div>
+        </div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon task">✅</div>
+        <div class="stat-info">
+          <div class="stat-value"><%= stats.typeCounts['Task'] || 0 %></div>
+          <div class="stat-label">Tasks</div>
+        </div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon bookmark">🔖</div>
+        <div class="stat-info">
+          <div class="stat-value"><%= stats.typeCounts['Bookmark'] || 0 %></div>
+          <div class="stat-label">Bookmarks</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Recent Items Section -->
+    <div class="section-title" style="margin-bottom: 1rem; display: flex; justify-content: space-between; align-items: center;">
+      <h2 style="font-size: 1.25rem;">⚡ Recent Items</h2>
+      <a href="/memories" style="color: var(--accent-purple); text-decoration: none; font-size: 0.9rem; font-weight: 500;">View All →</a>
+    </div>
+
+    <% if (stats.recent.length === 0) { %>
+      <div style="background: var(--bg-card); padding: 3rem; text-align: center; border-radius: 12px; border: 1px solid var(--border-color);">
+        <h3>No memories saved yet!</h3>
+        <p style="color: var(--text-muted); margin-top: 0.5rem; margin-bottom: 1.5rem;">Start capturing your notes, code, ideas, and tasks.</p>
+        <a href="/memories/create" class="btn btn-primary">+ Add Your First Memory</a>
+      </div>
+    <% } else { %>
+      <div class="memories-grid">
+        <% stats.recent.forEach(mem => { %>
+          <a href="/memories/<%= mem.id %>" class="memory-card type-<%= mem.type %>">
+            <div>
+              <div class="card-header">
+                <h3 class="card-title"><%= mem.title %></h3>
+                <span class="type-badge badge-<%= mem.type %>"><%= mem.type %></span>
+              </div>
+
+              <% if (mem.category) { %>
+                <div style="font-size: 0.8rem; color: var(--text-dim); margin-top: 0.25rem;">
+                  📁 <%= mem.category %> <% if(mem.sub_category){ %> › <%= mem.sub_category %><% } %>
+                </div>
+              <% } %>
+
+              <div class="card-body" style="margin-top: 0.75rem;">
+                <% if (mem.type === 'Code') { %>
+                  <div class="card-code-preview">
+                    <code><%= mem.content.slice(0, 120) %></code>
+                  </div>
+                <% } else if (mem.type === 'Task') { %>
+                  <div>Status: <strong><%= mem.task_status %></strong> (<%= mem.task_percentage %>%)</div>
+                  <div class="card-progress-bar">
+                    <div class="card-progress-fill" style="width: <%= mem.task_percentage %>%;"></div>
+                  </div>
+                <% } else if (mem.type === 'Bookmark') { %>
+                  <div style="color: var(--accent-cyan); font-size: 0.85rem; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">
+                    🔗 <%= mem.url %>
+                  </div>
+                <% } else { %>
+                  <%= mem.content.slice(0, 150) %>
+                <% } %>
+              </div>
+            </div>
+
+            <div class="card-footer">
+              <div class="tags-list">
+                <% if (mem.tags) { %>
+                  <% mem.tags.split(',').slice(0, 3).forEach(t => { %>
+                    <span class="tag-item">#<%= t.trim() %></span>
+                  <% }) %>
+                <% } %>
+              </div>
+              <time><%= new Date(mem.created_at).toLocaleDateString() %></time>
+            </div>
+          </a>
+        <% }) %>
+      </div>
+    <% } %>
+  </main>
+</div>
+
+<%- include('partials/footer') %>

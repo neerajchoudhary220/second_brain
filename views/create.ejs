@@ -1,0 +1,113 @@
+<%- include('partials/header') %>
+<%- include('partials/sidebar') %>
+
+<div class="main-wrapper">
+  <%- include('partials/topbar') %>
+
+  <main class="content-body">
+    <div class="form-container">
+      <div style="margin-bottom: 2rem;">
+        <h1 class="page-title">🧠 Add to Second Brain</h1>
+        <p class="page-subtitle">Quickly capture anything you want to remember</p>
+      </div>
+
+      <form action="/memories" method="POST">
+        <!-- Title & Type Row -->
+        <div class="form-row">
+          <div class="form-group">
+            <label for="title" class="form-label">Title *</label>
+            <input type="text" name="title" id="title" class="form-input" placeholder="e.g. Express Routing Cheat Sheet" required>
+          </div>
+
+          <div class="form-group">
+            <label for="memory-type-select" class="form-label">Type *</label>
+            <select name="type" id="memory-type-select" class="form-select" required>
+              <option value="Note" <%= defaultType === 'Note' ? 'selected' : '' %>>📝 Note</option>
+              <option value="Code" <%= defaultType === 'Code' ? 'selected' : '' %>>💻 Code Snippet</option>
+              <option value="Idea" <%= defaultType === 'Idea' ? 'selected' : '' %>>💡 Idea</option>
+              <option value="Task" <%= defaultType === 'Task' ? 'selected' : '' %>>✅ Task</option>
+              <option value="Bookmark" <%= defaultType === 'Bookmark' ? 'selected' : '' %>>🔖 Bookmark</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- Conditional Field: Code Language -->
+        <div class="form-group" id="code-fields-group" style="display: none;">
+          <label for="code_language" class="form-label">Language</label>
+          <select name="code_language" id="code_language" class="form-select">
+            <option value="javascript">JavaScript</option>
+            <option value="python">Python</option>
+            <option value="html">HTML</option>
+            <option value="css">CSS</option>
+            <option value="sql">SQL</option>
+            <option value="json">JSON</option>
+            <option value="bash">Bash / Shell</option>
+          </select>
+        </div>
+
+        <!-- Conditional Fields: Task Status & Progress -->
+        <div class="form-row" id="task-fields-group" style="display: none;">
+          <div class="form-group">
+            <label for="task_status" class="form-label">Task Status</label>
+            <select name="task_status" id="task_status" class="form-select">
+              <option value="Todo">📋 Todo</option>
+              <option value="In Progress">⏳ In Progress</option>
+              <option value="Completed">✅ Completed</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="task-percentage-input" class="form-label">Completion Progress: <span id="task-percentage-display" style="color: var(--accent-emerald); font-weight: 700;">0%</span></label>
+            <input type="range" name="task_percentage" id="task-percentage-input" min="0" max="100" value="0" style="width: 100%; margin-top: 0.5rem;">
+          </div>
+        </div>
+
+        <!-- Conditional Field: Bookmark URL -->
+        <div class="form-group" id="bookmark-fields-group" style="display: none;">
+          <label for="url" class="form-label">Bookmark URL</label>
+          <input type="url" name="url" id="url" class="form-input" placeholder="https://example.com/useful-article">
+        </div>
+
+        <!-- Category & Sub-category Row -->
+        <div class="form-row">
+          <div class="form-group">
+            <label for="category" class="form-label">Category</label>
+            <input type="text" name="category" id="category" class="form-input" placeholder="e.g. Development, Personal, Ideas" list="existing-categories">
+            <datalist id="existing-categories">
+              <% if (typeof categories !== 'undefined') { %>
+                <% categories.forEach(cat => { %>
+                  <option value="<%= cat.category %>"></option>
+                <% }) %>
+              <% } %>
+            </datalist>
+          </div>
+
+          <div class="form-group">
+            <label for="sub_category" class="form-label">Sub-category</label>
+            <input type="text" name="sub_category" id="sub_category" class="form-input" placeholder="e.g. Backend, Frontend, Mindset">
+          </div>
+        </div>
+
+        <!-- Tags Field -->
+        <div class="form-group">
+          <label for="tags" class="form-label">Tags (comma separated)</label>
+          <input type="text" name="tags" id="tags" class="form-input" placeholder="e.g. express, nodejs, routing">
+          <div class="form-help">Separate tags with commas</div>
+        </div>
+
+        <!-- Content Area -->
+        <div class="form-group">
+          <label for="content-textarea" class="form-label">Content / Body</label>
+          <textarea name="content" id="content-textarea" class="form-textarea" placeholder="Type your note content here..."></textarea>
+        </div>
+
+        <!-- Submit Buttons -->
+        <div style="display: flex; justify-content: flex-end; gap: 1rem; margin-top: 2rem;">
+          <a href="/memories" class="btn btn-secondary">Cancel</a>
+          <button type="submit" class="btn btn-primary">Save to Brain 💾</button>
+        </div>
+      </form>
+    </div>
+  </main>
+</div>
+
+<%- include('partials/footer') %>

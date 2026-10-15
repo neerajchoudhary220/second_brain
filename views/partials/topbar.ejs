@@ -1,0 +1,21 @@
+<header class="topbar">
+  <form action="/search" method="GET" class="search-form">
+    <span class="search-icon">🔍</span>
+    <input 
+      type="text" 
+      name="q" 
+      id="global-search-input"
+      class="search-input" 
+      placeholder="Search anything in your Second Brain..." 
+      value="<%= typeof searchQuery !== 'undefined' ? searchQuery : '' %>"
+      autocomplete="off"
+    >
+    <span class="search-shortcut">Ctrl K</span>
+  </form>
+
+  <div class="topbar-actions">
+    <a href="/memories/create" class="btn btn-primary">
+      <span>+ Add Memory</span>
+    </a>
+  </div>
+</header>

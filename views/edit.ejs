@@ -1,0 +1,112 @@
+<%- include('partials/header') %>
+<%- include('partials/sidebar') %>
+
+<div class="main-wrapper">
+  <%- include('partials/topbar') %>
+
+  <main class="content-body">
+    <div class="form-container">
+      <div style="margin-bottom: 2rem;">
+        <h1 class="page-title">✏️ Edit Memory</h1>
+        <p class="page-subtitle">Update your memory details</p>
+      </div>
+
+      <form action="/memories/<%= memory.id %>/update" method="POST">
+        <!-- Title & Type Row -->
+        <div class="form-row">
+          <div class="form-group">
+            <label for="title" class="form-label">Title *</label>
+            <input type="text" name="title" id="title" class="form-input" value="<%= memory.title %>" required>
+          </div>
+
+          <div class="form-group">
+            <label for="memory-type-select" class="form-label">Type *</label>
+            <select name="type" id="memory-type-select" class="form-select" required>
+              <option value="Note" <%= memory.type === 'Note' ? 'selected' : '' %>>📝 Note</option>
+              <option value="Code" <%= memory.type === 'Code' ? 'selected' : '' %>>💻 Code Snippet</option>
+              <option value="Idea" <%= memory.type === 'Idea' ? 'selected' : '' %>>💡 Idea</option>
+              <option value="Task" <%= memory.type === 'Task' ? 'selected' : '' %>>✅ Task</option>
+              <option value="Bookmark" <%= memory.type === 'Bookmark' ? 'selected' : '' %>>🔖 Bookmark</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- Conditional Field: Code Language -->
+        <div class="form-group" id="code-fields-group" style="display: <%= memory.type === 'Code' ? 'block' : 'none' %>;">
+          <label for="code_language" class="form-label">Language</label>
+          <select name="code_language" id="code_language" class="form-select">
+            <option value="javascript" <%= memory.code_language === 'javascript' ? 'selected' : '' %>>JavaScript</option>
+            <option value="python" <%= memory.code_language === 'python' ? 'selected' : '' %>>Python</option>
+            <option value="html" <%= memory.code_language === 'html' ? 'selected' : '' %>>HTML</option>
+            <option value="css" <%= memory.code_language === 'css' ? 'selected' : '' %>>CSS</option>
+            <option value="sql" <%= memory.code_language === 'sql' ? 'selected' : '' %>>SQL</option>
+            <option value="json" <%= memory.code_language === 'json' ? 'selected' : '' %>>JSON</option>
+            <option value="bash" <%= memory.code_language === 'bash' ? 'selected' : '' %>>Bash / Shell</option>
+          </select>
+        </div>
+
+        <!-- Conditional Fields: Task Status & Progress -->
+        <div class="form-row" id="task-fields-group" style="display: <%= memory.type === 'Task' ? 'grid' : 'none' %>;">
+          <div class="form-group">
+            <label for="task_status" class="form-label">Task Status</label>
+            <select name="task_status" id="task_status" class="form-select">
+              <option value="Todo" <%= memory.task_status === 'Todo' ? 'selected' : '' %>>📋 Todo</option>
+              <option value="In Progress" <%= memory.task_status === 'In Progress' ? 'selected' : '' %>>⏳ In Progress</option>
+              <option value="Completed" <%= memory.task_status === 'Completed' ? 'selected' : '' %>>✅ Completed</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="task-percentage-input" class="form-label">Completion Progress: <span id="task-percentage-display" style="color: var(--accent-emerald); font-weight: 700;"><%= memory.task_percentage || 0 %>%</span></label>
+            <input type="range" name="task_percentage" id="task-percentage-input" min="0" max="100" value="<%= memory.task_percentage || 0 %>" style="width: 100%; margin-top: 0.5rem;">
+          </div>
+        </div>
+
+        <!-- Conditional Field: Bookmark URL -->
+        <div class="form-group" id="bookmark-fields-group" style="display: <%= memory.type === 'Bookmark' ? 'block' : 'none' %>;">
+          <label for="url" class="form-label">Bookmark URL</label>
+          <input type="url" name="url" id="url" class="form-input" value="<%= memory.url || '' %>">
+        </div>
+
+        <!-- Category & Sub-category Row -->
+        <div class="form-row">
+          <div class="form-group">
+            <label for="category" class="form-label">Category</label>
+            <input type="text" name="category" id="category" class="form-input" value="<%= memory.category || '' %>" list="existing-categories">
+            <datalist id="existing-categories">
+              <% if (typeof categories !== 'undefined') { %>
+                <% categories.forEach(cat => { %>
+                  <option value="<%= cat.category %>"></option>
+                <% }) %>
+              <% } %>
+            </datalist>
+          </div>
+
+          <div class="form-group">
+            <label for="sub_category" class="form-label">Sub-category</label>
+            <input type="text" name="sub_category" id="sub_category" class="form-input" value="<%= memory.sub_category || '' %>">
+          </div>
+        </div>
+
+        <!-- Tags Field -->
+        <div class="form-group">
+          <label for="tags" class="form-label">Tags (comma separated)</label>
+          <input type="text" name="tags" id="tags" class="form-input" value="<%= memory.tags || '' %>">
+        </div>
+
+        <!-- Content Area -->
+        <div class="form-group">
+          <label for="content-textarea" class="form-label">Content / Body</label>
+          <textarea name="content" id="content-textarea" class="form-textarea"><%= memory.content %></textarea>
+        </div>
+
+        <!-- Submit Buttons -->
+        <div style="display: flex; justify-content: flex-end; gap: 1rem; margin-top: 2rem;">
+          <a href="/memories/<%= memory.id %>" class="btn btn-secondary">Cancel</a>
+          <button type="submit" class="btn btn-primary">Update Memory 🔄</button>
+        </div>
+      </form>
+    </div>
+  </main>
+</div>
+
+<%- include('partials/footer') %>

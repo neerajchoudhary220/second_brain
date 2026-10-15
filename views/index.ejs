@@ -1,0 +1,102 @@
+<%- include('partials/header') %>
+<%- include('partials/sidebar') %>
+
+<div class="main-wrapper">
+  <%- include('partials/topbar') %>
+
+  <main class="content-body">
+    <div class="page-header">
+      <div>
+        <h1 class="page-title">
+          <% if (filterType) { %>
+            <%= filterType %> Memories
+          <% } else if (filterCategory) { %>
+            Category: <%= filterCategory %>
+          <% } else if (filterTag) { %>
+            Tag: #<%= filterTag %>
+          <% } else if (searchQuery) { %>
+            Search Results for "<%= searchQuery %>"
+          <% } else { %>
+            🗂️ All Memories
+          <% } %>
+        </h1>
+        <p class="page-subtitle">Showing <%= memories.length %> saved memories</p>
+      </div>
+      <a href="/memories/create<%= filterType ? '?type=' + filterType : '' %>" class="btn btn-primary">+ Add Memory</a>
+    </div>
+
+    <!-- Filter Bar -->
+    <div class="filter-bar">
+      <span style="font-size: 0.85rem; font-weight: 600; color: var(--text-dim); margin-right: 0.5rem;">TYPE:</span>
+      <a href="/memories" class="filter-chip <%= !filterType ? 'active' : '' %>">All</a>
+      <a href="/memories?type=Note" class="filter-chip <%= filterType === 'Note' ? 'active' : '' %>">📝 Notes</a>
+      <a href="/memories?type=Code" class="filter-chip <%= filterType === 'Code' ? 'active' : '' %>">💻 Code</a>
+      <a href="/memories?type=Idea" class="filter-chip <%= filterType === 'Idea' ? 'active' : '' %>">💡 Ideas</a>
+      <a href="/memories?type=Task" class="filter-chip <%= filterType === 'Task' ? 'active' : '' %>">✅ Tasks</a>
+      <a href="/memories?type=Bookmark" class="filter-chip <%= filterType === 'Bookmark' ? 'active' : '' %>">🔖 Bookmarks</a>
+    </div>
+
+    <% if (memories.length === 0) { %>
+      <div style="background: var(--bg-card); padding: 3rem; text-align: center; border-radius: 12px; border: 1px solid var(--border-color);">
+        <h3>No matching memories found</h3>
+        <p style="color: var(--text-muted); margin-top: 0.5rem; margin-bottom: 1.5rem;">Try clearing your filters or search query.</p>
+        <a href="/memories" class="btn btn-secondary">Clear Filters</a>
+      </div>
+    <% } else { %>
+      <div class="memories-grid">
+        <% memories.forEach(mem => { %>
+          <a href="/memories/<%= mem.id %>" class="memory-card type-<%= mem.type %>">
+            <div>
+              <div class="card-header">
+                <h3 class="card-title"><%= mem.title %></h3>
+                <span class="type-badge badge-<%= mem.type %>"><%= mem.type %></span>
+              </div>
+
+              <% if (mem.category) { %>
+                <div style="font-size: 0.8rem; color: var(--text-dim); margin-top: 0.25rem;">
+                  📁 <%= mem.category %> <% if(mem.sub_category){ %> › <%= mem.sub_category %><% } %>
+                </div>
+              <% } %>
+
+              <div class="card-body" style="margin-top: 0.75rem;">
+                <% if (mem.type === 'Code') { %>
+                  <div class="card-code-preview">
+                    <code><%= mem.content.slice(0, 150) %></code>
+                  </div>
+                <% } else if (mem.type === 'Task') { %>
+                  <div style="display: flex; justify-content: space-between; font-size: 0.85rem; margin-bottom: 0.35rem;">
+                    <span>Status: <strong><%= mem.task_status %></strong></span>
+                    <span><%= mem.task_percentage %>%</span>
+                  </div>
+                  <div class="card-progress-bar">
+                    <div class="card-progress-fill" style="width: <%= mem.task_percentage %>%;"></div>
+                  </div>
+                <% } else if (mem.type === 'Bookmark') { %>
+                  <div style="color: var(--accent-cyan); font-size: 0.85rem; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">
+                    🔗 <%= mem.url %>
+                  </div>
+                  <p style="margin-top: 0.35rem;"><%= mem.content.slice(0, 100) %></p>
+                <% } else { %>
+                  <%= mem.content.slice(0, 150) %>
+                <% } %>
+              </div>
+            </div>
+
+            <div class="card-footer">
+              <div class="tags-list">
+                <% if (mem.tags) { %>
+                  <% mem.tags.split(',').slice(0, 3).forEach(t => { %>
+                    <span class="tag-item">#<%= t.trim() %></span>
+                  <% }) %>
+                <% } %>
+              </div>
+              <time><%= new Date(mem.created_at).toLocaleDateString() %></time>
+            </div>
+          </a>
+        <% }) %>
+      </div>
+    <% } %>
+  </main>
+</div>
+
+<%- include('partials/footer') %>
